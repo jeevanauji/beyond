@@ -8,13 +8,19 @@ import {
   Routes,
   Route,
   useNavigate,
+  useLocation, 
 } from "react-router-dom";
 import Admin from "./Compnents/Admin.jsx";
 import DeliveryBoy from "./Compnents/DeliveryBoy.jsx";
 import Dashboard from "./Pages/Dashboard.jsx";
+import Navbar from "./Compnents/Navbar.jsx";
+import AdminNavbar from "./Compnents/AdminNavbar.jsx";
+import Orders from "./Pages/Orders.jsx";
+import AddProduct from "./Pages/AddProduct.jsx";
 
 function App() {
   const navigate = useNavigate();
+  const location = useLocation(); 
   const [data, setData] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
 
@@ -28,71 +34,46 @@ function App() {
         console.error("Error fetching data:", error);
       }
     };
-
     fetchData();
   }, []);
 
-  // Logout function (must be outside useEffect)
   const handleLogout = () => {
     localStorage.removeItem("token");
-    setIsLoggedIn(false); // re-render UI
+    setIsLoggedIn(false);
+    navigate("/"); 
   };
 
-  // If not logged in, show login page
-  if (!isLoggedIn) {
+  if (!isLoggedIn && !location.pathname.startsWith("/admin")) {
     return (
       <>
-        <nav className="navbar navbar-light bg-light">
-          <form className="form-inline">
-            <button className="btn btn-outline-secondary" type="button">
-              Home
-            </button>
-            <button
-              className="btn btn-sm btn-outline-success"
-              type="button"
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
-          </form>
-        </nav>
+        <Navbar onLogout={handleLogout} />
         <Login onLoginSuccess={() => setIsLoggedIn(true)} />
       </>
     );
   }
 
-  // If logged in, show products and logout button
+  const isAdminRoute =
+    location.pathname === "/admin"
+    || location.pathname === "/admin/dashboard"
+    || location.pathname === "/admin/orders"
+    || location.pathname === "/admin/add-product";
+
   return (
     <>
-      <nav className="navbar navbar-light bg-light">
-        <form className="form-inline">
-          <button className="btn btn-outline-success" type="button"
-          onClick={() => navigate("/")}
-          >
-            Home
-          </button>
-          <button
-            className="btn btn-sm btn-outline-secondary"
-            type="button"
-            onClick={handleLogout}
-          >
-            Logout
-          </button>
-          <button
-            className="btn btn-sm btn-outline-secondary"
-            type="button"
-            onClick={() => navigate("/track-order")}
-          >
-            Track Your Order
-          </button>
-        </form>
-      </nav>
+      {isAdminRoute ? (
+        <AdminNavbar onLogout={handleLogout} />
+      ) : (
+        <Navbar onLogout={handleLogout} />
+      )}
+
       <Routes>
         <Route path="/" element={<Products data={data} />} />
         <Route path="/track-order" element={<OrderTracking />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/delivery-boy" element={<DeliveryBoy />} />
         <Route path="/admin/dashboard" element={<Dashboard />} />
+        <Route path="/admin/orders" element={<Orders />} />
+        <Route path="/admin/add-product" element={<AddProduct />} />
       </Routes>
     </>
   );

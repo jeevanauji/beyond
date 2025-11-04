@@ -12,4 +12,17 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch products' });
   }
 });
+
+router.post("/add", async (req, res) => {
+  const { title, description, mainImage, priceStart, thumbnails } = req.body;
+  const newProduct = new Product({ title, description, mainImage, priceStart, thumbnails });
+
+  try {
+    const savedProduct = await newProduct.save();
+    res.status(201).json(savedProduct);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to add product" });
+  }
+});
 module.exports = router;
