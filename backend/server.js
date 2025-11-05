@@ -8,16 +8,21 @@ const authRoutes = require("./routes/auth.js");
 const products = require("./routes/products.js");
 const { verifyToken } = require("./middleware/auth.js");
 const adminRoutes = require("./routes/admin");
+const userRoutes = require("./routes/user");
+const orderRoutes = require("./routes/orders");
 const env = require('dotenv');
 env.config();
 
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static("uploads"));
 
-// Routes
+// Routes 
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/products", products);
+app.use("/api/users", userRoutes);
+app.use("/api/orders", orderRoutes);
 
 
 // Example protected route
@@ -31,7 +36,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/jeevan')
   .catch(err => console.error('MongoDB connection error:', err));
 
 
-  
+
 app.get('/', async (req, res) => {
   try {
     const products = await Product.find();

@@ -40,7 +40,7 @@ function Navbar({ onLogout }) {
                 <button
                     className="btn btn-outline-danger"
                     type="button"
-                    onClick={handleLogout}
+                    onClick={onLogout}
                 >
                     Logout
                 </button>

@@ -17,6 +17,7 @@ import Navbar from "./Compnents/Navbar.jsx";
 import AdminNavbar from "./Compnents/AdminNavbar.jsx";
 import Orders from "./Pages/Orders.jsx";
 import AddProduct from "./Pages/AddProduct.jsx";
+import Order from "./Pages/Order.jsx";
 
 function App() {
   const navigate = useNavigate();
@@ -42,6 +43,11 @@ function App() {
     setIsLoggedIn(false);
     navigate("/"); 
   };
+  const handleLogoutAdmin = () => {
+    localStorage.removeItem("adminToken");
+    setIsLoggedIn(false);
+    navigate("/admin"); 
+  };
 
   if (!isLoggedIn && !location.pathname.startsWith("/admin")) {
     return (
@@ -61,7 +67,7 @@ function App() {
   return (
     <>
       {isAdminRoute ? (
-        <AdminNavbar onLogout={handleLogout} />
+        <AdminNavbar onLogout={handleLogoutAdmin} />
       ) : (
         <Navbar onLogout={handleLogout} />
       )}
@@ -74,6 +80,7 @@ function App() {
         <Route path="/admin/dashboard" element={<Dashboard />} />
         <Route path="/admin/orders" element={<Orders />} />
         <Route path="/admin/add-product" element={<AddProduct />} />
+        <Route path="/order" element={<Order />} />
       </Routes>
     </>
   );
