@@ -11,7 +11,7 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch all orders
+
   const fetchOrders = async () => {
     try {
       const res = await axios.get("http://localhost:3000/api/orders", {

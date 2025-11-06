@@ -6,7 +6,6 @@ function Navbar({ onLogout }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Sync login state with localStorage changes
     const handleStorageChange = () => {
       setIsLoggedIn(!!localStorage.getItem("token"));
     };
@@ -24,7 +23,7 @@ function Navbar({ onLogout }) {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light px-3 fixed-top shadow-sm">
       <div className="container-fluid">
-        {/* Brand */}
+   
         <span
           className="navbar-brand"
           style={{ cursor: "pointer" }}
@@ -33,7 +32,6 @@ function Navbar({ onLogout }) {
           <h2 className="m-0">Home</h2>
         </span>
 
-        {/* Toggle button */}
         <button
           className="navbar-toggler"
           type="button"
@@ -46,10 +44,9 @@ function Navbar({ onLogout }) {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Collapsible content */}
         <div className="collapse navbar-collapse" id="navbarNavDropdown">
           <ul className="navbar-nav ms-auto align-items-center">
-            {/* Cart */}
+     
             <li className="nav-item me-3">
               <span
                 className="nav-link"
@@ -60,7 +57,7 @@ function Navbar({ onLogout }) {
               </span>
             </li>
 
-            {/* Dropdown */}
+          
             <li className="nav-item dropdown">
               <a
                 className="nav-link dropdown-toggle d-flex align-items-center"

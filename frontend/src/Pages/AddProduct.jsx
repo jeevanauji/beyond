@@ -7,43 +7,35 @@ const AddProduct = () => {
 
     const formData = new FormData(e.target);
 
-    // Prepare product details (non-file fields)
     const productData = {
       title: formData.get("pname"),
       description: formData.get("pdesc"),
       priceStart: formData.get("pprice"),
     };
 
-    // Create a new FormData object to send both text data and files
     const data = new FormData();
 
-    // Append non-file fields
     data.append("title", productData.title);
     data.append("description", productData.description);
     data.append("priceStart", productData.priceStart);
 
-    // Append the file data
     const mainImage = formData.get("pimage");
     const thumbnails = formData.getAll("pthumbnail");
 
-    // Append main image (single file)
     if (mainImage) {
       data.append("pimage", mainImage);
     }
 
-    // Append thumbnails (multiple files)
     if (thumbnails && thumbnails.length > 0) {
       thumbnails.forEach((thumbnail) => {
         data.append("pthumbnail", thumbnail);
       });
     }
 
-    // ✅ Debug: Log FormData contents
     for (let [key, value] of data.entries()) {
       console.log(key, value);
     }
 
-    // Submit data via axios
     axios
       .post("http://localhost:3000/api/products/add", data, {
         headers: {

@@ -74,7 +74,7 @@ const Order = () => {
     >
       <div className="container">
         <div className="row justify-content-center">
-          {/* Card Container */}
+         
           <div className="col-lg-8">
             <div className="card border-0 shadow-lg">
               <div className="card-header bg-primary text-white text-center">
@@ -82,7 +82,7 @@ const Order = () => {
               </div>
               <div className="card-body p-4">
                 <div className="row g-4 align-items-center">
-                  {/* Product Info */}
+               
                   <div className="col-md-6 text-center">
                     <img
                       src={product.mainImage}
@@ -102,7 +102,7 @@ const Order = () => {
                     </small>
                   </div>
 
-                  {/* Order Form */}
+                 
                   <div className="col-md-6">
                     <h5 className="fw-bold mb-3">Enter Your Details</h5>
                     <form onSubmit={handleSubmit}>
@@ -166,7 +166,7 @@ const Order = () => {
               </div>
             </div>
 
-            {/* Back to Shop Button */}
+           
             <div className="text-center mt-4">
               <button
                 className="btn btn-outline-secondary"

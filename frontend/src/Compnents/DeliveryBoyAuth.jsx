@@ -47,8 +47,6 @@ const DeliveryBoyAuth = ({ onLoginSuccess }) => {
     <div
       style={{
         height: "100vh",
-        backgroundImage:
-          "url('https://images.unsplash.com/photo-1605902711622-cfb43c443f5f?auto=format&fit=crop&w=1470&q=80')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         display: "flex",

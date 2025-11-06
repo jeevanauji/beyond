@@ -1,4 +1,3 @@
-// AdminOrdersDashboard.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
@@ -44,9 +43,7 @@ const AdminOrdersDashboard = () => {
 
     socket.on("deliveryRequest", (data) => {
       console.log("New delivery request:", data);
-      // Optionally show toast/alert
       fetchOrders();
-      // You can also show a visual highlight for the order using local state
     });
 
     socket.on("orderUpdated", (updatedOrder) => {
@@ -58,7 +55,6 @@ const AdminOrdersDashboard = () => {
 
     socket.on("deliveryRequestResponse", (data) => {
       console.log("deliveryRequestResponse:", data);
-      // if you want to show responses on admin dashboard too
       fetchOrders();
     });
 
@@ -99,7 +95,7 @@ const AdminOrdersDashboard = () => {
                   <td>{index + 1}</td>
                   <td>{order.name}</td>
                   <td>{order.address}</td>
-                  <td>{order.title}</td>
+                  <td>{order.title}</td> 
                   <td>₹{order.price}</td>
                   <td>
                     <span
@@ -116,7 +112,7 @@ const AdminOrdersDashboard = () => {
                       {order.status}
                     </span>
                   </td>
-                  <td>{order.assignedTo ? "Assigned" : "Unassigned"}</td>
+                  <td>{order.assignedTo ? order.assignedTo.name : "Unassigned"}</td>
                   <td>
                     {order.deliveryRequest?.status === "Pending" ? (
                       <>

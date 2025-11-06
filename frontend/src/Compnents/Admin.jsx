@@ -11,7 +11,7 @@ const Admin = ({ onLoginSuccess }) => {
     password: "",
   });
   const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState("info"); // info | success | danger
+  const [messageType, setMessageType] = useState("info"); 
 
   const toggleMode = () => {
     setIsRegister((prev) => !prev);

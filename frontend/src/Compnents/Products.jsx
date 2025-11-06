@@ -29,7 +29,6 @@ const Products = () => {
 
   return (
     <>
-      {/* ===== HERO SECTION ===== */}
       <section
         className="d-flex align-items-center justify-content-center text-center text-light min-vh-100"
         style={{
@@ -48,7 +47,6 @@ const Products = () => {
           </p>
           <p className="lead">Order now and Get Discount.</p>
 
-          {/* Scroll Button */}
           <button
             onClick={scrollToNextSection}
             className="btn btn-link text-light mt-4 p-0 border-0"
@@ -73,7 +71,6 @@ const Products = () => {
         </div>
       </section>
 
-      {/* ===== PRODUCTS SECTION ===== */}
       <section className="container my-5">
         <h1 className="text-center mb-4">
           <u>EXPLORE OUR PRODUCTS </u>

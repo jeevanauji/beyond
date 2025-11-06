@@ -1,4 +1,3 @@
-// models/Orders.js
 const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema(

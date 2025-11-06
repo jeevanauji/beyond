@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 const DeliveryBoyOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -9,7 +8,6 @@ const DeliveryBoyOrders = () => {
   const [error, setError] = useState("");
   const token = localStorage.getItem("deliveryBoyToken");
 
-  // Decode JWT to get delivery boy ID
   const decodeToken = (token) => {
     try {
       const base64Url = token.split(".")[1];
@@ -27,7 +25,6 @@ const DeliveryBoyOrders = () => {
     }
   };
 
-  // Fetch active orders assigned to this delivery boy
   const fetchOrders = async () => {
     try {
       const res = await axios.get(
@@ -53,7 +50,6 @@ const DeliveryBoyOrders = () => {
     }
   };
 
-  // Change order status
   const handleStatusChange = async (orderId, newStatus) => {
     try {
       const res = await axios.put(
@@ -84,7 +80,6 @@ const DeliveryBoyOrders = () => {
 
     fetchOrders();
 
-    // Listen for real-time updates
     socket.on("orderUpdated", (updatedOrder) => {
       setOrders((prev) =>
         prev.map((order) =>

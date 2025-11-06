@@ -73,13 +73,13 @@ const UserProfile = () => {
         backgroundBlendMode: "overlay",
       }}
     >
-      {/* Dark Overlay */}
+   
       <div
         className="position-absolute top-0 start-0 w-100 h-100"
         style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
       ></div>
 
-      {/* Card */}
+   
       <div
         className="card shadow-lg p-4 p-md-5 rounded-4 bg-light text-dark position-relative"
         style={{

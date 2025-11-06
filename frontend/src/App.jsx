@@ -30,7 +30,6 @@ function App() {
   const [data, setData] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
 
-  // Fetch data
   useEffect(() => {
     const fetchData = async () => {
       try {

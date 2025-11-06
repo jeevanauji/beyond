@@ -10,7 +10,7 @@ const OrderTracking = () => {
 
   const token = localStorage.getItem("token");
 
-  // Decode token to get userId
+
   const decodeToken = (token) => {
     try {
       const base64Url = token.split(".")[1];
@@ -28,7 +28,6 @@ const OrderTracking = () => {
     }
   };
 
-  // Fetch orders
   const fetchOrders = async (userId) => {
     try {
       const res = await axios.get(

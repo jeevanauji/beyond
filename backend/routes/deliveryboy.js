@@ -8,7 +8,6 @@ const router = express.Router();
 
 const JWT_SECRET = process.env.JWT_SECRET || "jeevansecretkey";
 
-// REGISTER
 router.post("/register", async (req, res) => {
     try {
         const { name, email, password, address, vehicle, licenseNumber } = req.body;
@@ -36,7 +35,7 @@ router.post("/register", async (req, res) => {
     }
 });
 
-// LOGIN
+
 router.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body;

@@ -61,7 +61,6 @@ const Login = ({ onLoginSuccess }) => {
         backgroundPosition: "center",
       }}
     >
-      {/* Dark overlay */}
       <div
         className="position-absolute top-0 start-0 w-100 h-100"
         style={{
@@ -69,7 +68,6 @@ const Login = ({ onLoginSuccess }) => {
         }}
       ></div>
 
-      {/* Card */}
       <div
         className="card shadow-lg p-4 p-md-5 rounded-4 bg-light text-dark position-relative"
         style={{
@@ -152,7 +150,6 @@ const Login = ({ onLoginSuccess }) => {
           </button>
         </form>
 
-        {/* Toggle Mode */}
         <div className="mt-4">
           <p className="text-muted">
             {isSignup ? "Already have an account?" : "Don't have an account?"}{" "}
@@ -165,7 +162,6 @@ const Login = ({ onLoginSuccess }) => {
           </p>
         </div>
 
-        {/* Message */}
         {message && (
           <div className="alert alert-info mt-3 py-2 mb-0">{message}</div>
         )}

@@ -5,16 +5,13 @@ const Admin = require("../models/Admin.js");
 
 const router = express.Router();
 
-// ✅ ADMIN REGISTER
 router.post("/register", async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
-        // Check if admin already exists
         const existing = await Admin.findOne({ email });
         if (existing) return res.status(400).json({ message: "Admin already exists" });
 
-        // Create new admin
         const hashedPassword = await bcrypt.hash(password, 10);
         const newAdmin = await Admin.create({ name, email, password: hashedPassword });
 
@@ -30,11 +27,10 @@ router.post("/login", async (req, res) => {
         const admin = await Admin.findOne({ email });
         if (!admin) return res.status(404).json({ message: "Admin not found" });
 
-        // Compare plain password with stored hash
         const isValid = await bcrypt.compare(password, admin.password);
         if (!isValid) return res.status(400).json({ message: "Invalid credentials" });
 
-        // Generate JWT
+    
         const token = jwt.sign(
             { id: admin._id, email: admin.email, role: "admin" },
             process.env.JWT_SECRET,

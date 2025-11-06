@@ -9,7 +9,7 @@ const DeliveryBoy = () => {
     if (token) {
       navigate("/delivery-boy/dashboard");
     } else {
-      navigate("/delivery-boy/login"); // your login route
+      navigate("/delivery-boy/login"); 
     }
   };
 
@@ -25,7 +25,6 @@ const DeliveryBoy = () => {
         backgroundRepeat: "no-repeat",
       }}
     >
-      {/* Overlay */}
       <div
         style={{
           position: "absolute",
@@ -33,7 +32,7 @@ const DeliveryBoy = () => {
           left: 0,
           height: "100%",
           width: "100%",
-          backgroundColor: "rgba(0, 0, 0, 0.5)", // dark overlay
+          backgroundColor: "rgba(0, 0, 0, 0.5)", 
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",

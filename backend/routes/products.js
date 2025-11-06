@@ -6,20 +6,17 @@ const Product = require("../models/Products.js");
 const router = express.Router();
 const BASE_URL = "http://localhost:3000";
 
-// 🧩 Configure Multer Storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./uploads/"); // Folder to store uploaded files
+    cb(null, "./uploads/"); 
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+    cb(null, Date.now() + path.extname(file.originalname)); 
   },
 });
 
-// Initialize multer
 const upload = multer({ storage });
 
-// 🟢 Route: Get all products
 router.get("/", async (req, res) => {
   try {
     const products = await Product.find().sort({ createdAt: -1 });
@@ -30,7 +27,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// 🟢 Route: Get product by ID (for editing)
 router.get("/:id", async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -43,7 +39,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// 🟢 Route: Add new product
 router.post(
   "/add",
   upload.fields([
@@ -82,7 +77,6 @@ router.post(
   }
 );
 
-// 🟡 Route: Edit / Update product
 router.put("/edit/:id", upload.single("mainImage"), async (req, res) => {
   try {
     const { title, description, priceStart } = req.body;
@@ -109,7 +103,6 @@ router.put("/edit/:id", upload.single("mainImage"), async (req, res) => {
   }
 });
 
-// 🔴 Route: Delete product
 router.delete("/:id", async (req, res) => {
   try {
     const deleted = await Product.findByIdAndDelete(req.params.id);

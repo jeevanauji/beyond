@@ -1,4 +1,3 @@
-// Dashboard.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +7,6 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
 
-  // Fetch all products
   const fetchProducts = async () => {
     try {
       const res = await axios.get("http://localhost:3000/api/products/", {
@@ -65,7 +63,6 @@ const Dashboard = () => {
           </button>
         </div>
 
-        {/* Product Cards Grid */}
         <div className="row g-4">
           {products.length > 0 ? (
             products.map((product) => (
