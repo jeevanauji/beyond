@@ -10,25 +10,24 @@ const Login = ({ onLoginSuccess }) => {
     password: "",
   });
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const toggleMode = () => {
     setIsSignup((prev) => !prev);
     setMessage("");
   };
 
-  // Handle form input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle form submission (signup or login)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
+    setLoading(true);
 
     try {
       if (isSignup) {
-        // Signup request
         const res = await axios.post("http://localhost:3000/api/auth/signup", {
           username: `${formData.firstName} ${formData.lastName}`,
           email: formData.email,
@@ -37,143 +36,141 @@ const Login = ({ onLoginSuccess }) => {
         setMessage("✅ Signup successful! You can now log in.");
         setIsSignup(false);
       } else {
-        // Login request
         const res = await axios.post("http://localhost:3000/api/auth/login", {
           email: formData.email,
           password: formData.password,
         });
-
-        // Store JWT token
         localStorage.setItem("token", res.data.token);
         setMessage("✅ Login successful!");
-
-        // Notify parent that user is logged in
         if (onLoginSuccess) onLoginSuccess();
       }
     } catch (err) {
       setMessage(err.response?.data?.message || "❌ Something went wrong.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <>
-      <section className="text-center">
-        {/* Top banner background */}
-        <div
-          className="p-5 bg-image"
-          style={{
-            backgroundImage:
-              "url(https://mdbootstrap.com/img/new/textures/full/171.jpg)",
-            height: "300px",
-          }}
-        ></div>
+    <section
+      className="d-flex align-items-center justify-content-center min-vh-100 text-center position-relative"
+      style={{
+        backgroundImage:
+          "url(https://images.unsplash.com/photo-1505842465776-3ac1cf1b3b45?auto=format&fit=crop&w=1920&q=80)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      {/* Dark overlay */}
+      <div
+        className="position-absolute top-0 start-0 w-100 h-100"
+        style={{
+          backgroundColor: "rgba(0, 0, 0, 0.6)",
+        }}
+      ></div>
 
-        {/* Card form container */}
-        <div
-          className="card mx-4 mx-md-5 shadow-5-strong bg-body-tertiary"
-          style={{ marginTop: "-100px", backdropFilter: "blur(30px)" }}
-        >
-          <div className="card-body py-5 px-md-5">
-            <div className="row d-flex justify-content-center">
-              <div className="col-lg-8">
-                <h2 className="fw-bold mb-5">
-                  {isSignup ? "Sign up now" : "Log in"}
-                </h2>
+      {/* Card */}
+      <div
+        className="card shadow-lg p-4 p-md-5 rounded-4 bg-light text-dark position-relative"
+        style={{
+          width: "100%",
+          maxWidth: "500px",
+          zIndex: 2,
+        }}
+      >
+        <h2 className="fw-bold mb-4 text-primary">
+          {isSignup ? "Create Account" : "Welcome Back"}
+        </h2>
+        <p className="text-muted mb-4">
+          {isSignup
+            ? "Join us today! Please fill in your details."
+            : "Please log in to continue."}
+        </p>
 
-                {/* FORM */}
-                <form onSubmit={handleSubmit}>
-                  {isSignup && (
-                    <div className="row">
-                      <div className="col-md-6 mb-4">
-                        <div className="form-outline">
-                          <input
-                            type="text"
-                            id="firstName"
-                            name="firstName"
-                            className="form-control"
-                            value={formData.firstName}
-                            onChange={handleChange}
-                            required
-                          />
-                          <label className="form-label" htmlFor="firstName">
-                            First name
-                          </label>
-                        </div>
-                      </div>
-                      <div className="col-md-6 mb-4">
-                        <div className="form-outline">
-                          <input
-                            type="text"
-                            id="lastName"
-                            name="lastName"
-                            className="form-control"
-                            value={formData.lastName}
-                            onChange={handleChange}
-                            required
-                          />
-                          <label className="form-label" htmlFor="lastName">
-                            Last name
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="form-outline mb-4">
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      className="form-control"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                    />
-                    <label className="form-label" htmlFor="email">
-                      Email address
-                    </label>
-                  </div>
-
-                  <div className="form-outline mb-4">
-                    <input
-                      type="password"
-                      id="password"
-                      name="password"
-                      className="form-control"
-                      value={formData.password}
-                      onChange={handleChange}
-                      required
-                    />
-                    <label className="form-label" htmlFor="password">
-                      Password
-                    </label>
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="btn btn-primary btn-block mb-4"
-                  >
-                    {isSignup ? "Sign up" : "Log in"}
-                  </button>
-                </form>
-
-                {/* Toggle Login/Signup */}
-                <div className="text-center mt-4">
-                  <button className="btn btn-link" onClick={toggleMode}>
-                    {isSignup
-                      ? "Already have an account? Log in"
-                      : "Don't have an account? Sign up"}
-                  </button>
-                </div>
-
-                {/* Message */}
-                {message && <p className="mt-3 text-info">{message}</p>}
+        <form onSubmit={handleSubmit}>
+          {isSignup && (
+            <div className="row">
+              <div className="col-md-6 mb-3">
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  className="form-control form-control-lg"
+                  placeholder="First name"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="col-md-6 mb-3">
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  className="form-control form-control-lg"
+                  placeholder="Last name"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  required
+                />
               </div>
             </div>
+          )}
+
+          <div className="mb-3">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              className="form-control form-control-lg"
+              placeholder="Email address"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
           </div>
+
+          <div className="mb-4">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              className="form-control form-control-lg"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="btn btn-primary btn-lg w-100 shadow-sm"
+            disabled={loading}
+          >
+            {loading ? "Please wait..." : isSignup ? "Sign Up" : "Log In"}
+          </button>
+        </form>
+
+        {/* Toggle Mode */}
+        <div className="mt-4">
+          <p className="text-muted">
+            {isSignup ? "Already have an account?" : "Don't have an account?"}{" "}
+            <button
+              className="btn btn-link p-0 text-primary fw-semibold"
+              onClick={toggleMode}
+            >
+              {isSignup ? "Log in" : "Sign up"}
+            </button>
+          </p>
         </div>
-      </section>
-    </>
+
+        {/* Message */}
+        {message && (
+          <div className="alert alert-info mt-3 py-2 mb-0">{message}</div>
+        )}
+      </div>
+    </section>
   );
 };
 

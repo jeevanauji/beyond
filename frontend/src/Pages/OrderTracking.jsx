@@ -1,180 +1,164 @@
+// OrderTracking.jsx
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import "./ot.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const OrderTracking = () => {
-  const navigate = useNavigate();
-  const { id } = useParams(); // Order ID from URL
-  const [orders, setOrders] = useState([]); // Changed to array to support multiple orders
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
+  const [error, setError] = useState("");
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/"); // go back to home or login page
+  const token = localStorage.getItem("token");
+
+  // Decode token to get userId
+  const decodeToken = (token) => {
+    try {
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split("")
+          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+          .join("")
+      );
+      return JSON.parse(jsonPayload);
+    } catch (err) {
+      console.error("Invalid token:", err);
+      return null;
+    }
+  };
+
+  // Fetch orders
+  const fetchOrders = async (userId) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:3000/api/orders/user/${userId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setOrders(res.data);
+    } catch (err) {
+      console.error("Error fetching orders:", err);
+      setError("Failed to fetch your orders.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await axios.get("http://localhost:3000/api/users/me", {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
-        setUser(res.data);
-      } catch (err) {
-        console.error("Error fetching user:", err);
-      }
-    };
-    fetchUser();
+    if (!token) {
+      setError("Please log in to view your orders.");
+      setLoading(false);
+      return;
+    }
+    const decoded = decodeToken(token);
+    if (decoded && decoded.id) fetchOrders(decoded.id);
+    else {
+      setError("Invalid session. Please log in again.");
+      setLoading(false);
+    }
   }, []);
 
-  useEffect(() => {
-    if (!user) return;
-    const fetchOrders = async () => {
-      try {
-        const res = await axios.get(
-          `http://localhost:3000/api/orders/user/${user._id}`
-        );
-        setOrders(res.data); // This will be an array of orders
-      } catch (err) {
-        console.error("Error fetching orders:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchOrders();
-  }, [user]);
-
   if (loading)
-    return <p className="text-center mt-5">Loading order details...</p>;
-  if (!orders.length) return <p className="text-center mt-5">No orders found.</p>;
+    return (
+      <div className="d-flex justify-content-center align-items-center min-vh-100">
+        <div className="spinner-border text-primary" role="status" />
+      </div>
+    );
 
-  // Step highlighting logic
-  const statusSteps = ["Pending", "Processing", "Shipped", "Delivered"];
+  if (error)
+    return (
+      <div className="text-center text-danger mt-5">
+        <p>{error}</p>
+      </div>
+    );
+
+  if (orders.length === 0)
+    return (
+      <div className="text-center mt-5">
+        <h5 className="text-muted">You don’t have any orders yet.</h5>
+      </div>
+    );
 
   return (
-    <div>
-      <section className="vh-100" style={{ backgroundColor: "#8c9eff" }}>
-        <div className="container py-5 h-100">
-          <div className="row d-flex justify-content-center align-items-center h-100">
-            <div className="col-12">
+    <section
+      className="min-vh-100 py-7"
+      style={{
+        backgroundImage:
+          "url('https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&fit=crop&w=1920&q=80')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundColor: "#333",
+        backgroundBlendMode: "overlay",
+      }}
+    >
+      <div className="container">
+        <h2 className="text-center text-white fw-bold mb-5">
+          My Orders Timeline
+        </h2>
+
+        <div className="timeline">
+          {orders.map((order, index) => {
+            const colors = {
+              Pending: "warning",
+              Accepted: "primary",
+              "Out for Delivery": "info",
+              Delivered: "success",
+            };
+            const badgeColor = colors[order.status] || "secondary";
+
+            return (
               <div
-                className="card card-stepper"
-                style={{ borderRadius: "16px" }}
+                className="timeline-item bg-white shadow-sm p-4 rounded-3 mb-4 position-relative"
+                key={order._id}
               >
-                <div className="card-body p-5">
-                  {/* 🔹 Orders Loop */}
-                  {orders.map((order) => {
-                    // Step highlighting logic for each order
-                    const activeStepIndex = statusSteps.indexOf(order.status);
+                <div
+                  className={`position-absolute top-0 start-0 translate-middle rounded-circle bg-${badgeColor}`}
+                  style={{
+                    width: "16px",
+                    height: "16px",
+                    border: "3px solid white",
+                    left: "-8px",
+                  }}
+                ></div>
 
-                    return (
-                      <div key={order._id}>
-                        {/* 🔹 Order Info Header */}
-                        <div className="d-flex justify-content-between align-items-center mb-5">
-                          <div>
-                            <h5 className="mb-0">
-                              INVOICE{" "}
-                              <span className="text-primary font-weight-bold">
-                                #{order._id.slice(0, 8)}
-                              </span>
-                            </h5>
-                            <p className="text-muted mb-0">
-                              Ordered by: <strong>{order.name}</strong> <br />
-                              Email: {order.email}
-                            </p>
-                          </div>
-                          <div className="text-end">
-                            <p className="mb-0">
-                              Ordered on:{" "}
-                              <span>
-                                {new Date(order.createdAt).toLocaleDateString()}
-                              </span>
-                            </p>
-                            <p className="mb-0">
-                              Status:{" "}
-                              <span className="font-weight-bold text-success">
-                                {order.status}
-                              </span>
-                            </p>
-                          </div>
-                        </div>
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                  <h5 className="mb-0 text-primary">{order.title}</h5>
+                  <span
+                    className={`badge bg-${badgeColor}`}
+                    style={{ fontSize: "0.8rem" }}
+                  >
+                    {order.status}
+                  </span>
+                </div>
 
-                        {/* 🔹 Progress Bar */}
-                        <ul
-                          id="progressbar-2"
-                          className="d-flex justify-content-between mx-0 mt-0 mb-5 px-0 pt-0 pb-2"
-                        >
-                          {statusSteps.map((step, index) => (
-                            <li
-                              key={step}
-                              className={`step0 text-center ${
-                                index <= activeStepIndex ? "active" : ""
-                              }`}
-                              id={`step${index + 1}`}
-                            ></li>
-                          ))}
-                        </ul>
-
-                        {/* 🔹 Step Labels */}
-                        <div className="d-flex justify-content-between">
-                          {statusSteps.map((step, index) => (
-                            <div className="d-lg-flex align-items-center" key={step}>
-                              <i
-                                className={`fas ${
-                                  index === 0
-                                    ? "fa-clipboard-list"
-                                    : index === 1
-                                    ? "fa-box-open"
-                                    : index === 2
-                                    ? "fa-shipping-fast"
-                                    : "fa-home"
-                                } fa-3x me-lg-4 mb-3 mb-lg-0`}
-                              ></i>
-                              <div>
-                                <p className="fw-bold mb-1">{step}</p>
-                                {/* <p className="fw-bold mb-0">{step}</p> */}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-
-                        {/* 🔹 Product Info */}
-                        <div className="mt-5">
-                          <hr />
-                          <div className="d-flex align-items-center">
-                            <img
-                              src={order.mainImage}
-                              alt={order.title}
-                              style={{
-                                width: "80px",
-                                height: "80px",
-                                objectFit: "cover",
-                                borderRadius: "8px",
-                              }}
-                              className="me-3"
-                            />
-                            <div>
-                              <h6 className="fw-bold">{order.title}</h6>
-                              <p className="text-muted mb-1">
-                                Quantity: {order.quantity}
-                              </p>
-                              <p className="fw-bold mb-0">Price: ${order.price}</p>
-                            </div>
-                          </div>
-                        </div>
-                        <hr />
-                      </div>
-                    );
+                <p className="mb-1 text-muted small">
+                  Ordered on:{" "}
+                  {new Date(order.createdAt).toLocaleDateString("en-IN", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
                   })}
+                </p>
+
+                <div className="mt-3">
+                  <p className="mb-1">
+                    <strong>Quantity:</strong> {order.quantity}
+                  </p>
+                  <p className="mb-1">
+                    <strong>Price:</strong> ₹{order.price}
+                  </p>
+                  <p className="mb-0">
+                    <strong>Delivery Address:</strong> {order.address}
+                  </p>
                 </div>
               </div>
-            </div>
-          </div>
+            );
+          })}
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 };
 

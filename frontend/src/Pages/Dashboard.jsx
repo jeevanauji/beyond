@@ -1,60 +1,120 @@
-import React from "react";
+// Dashboard.jsx
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [products, setProducts] = React.useState([]);
-  const addProduct = () => {
-    navigate("/admin/add-product");
+  const [products, setProducts] = useState([]);
+
+  // Fetch all products
+  const fetchProducts = async () => {
+    try {
+      const res = await axios.get("http://localhost:3000/api/products/", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+      });
+      setProducts(res.data);
+    } catch (err) {
+      console.error("Error fetching products:", err);
+      alert("Failed to load products");
+    }
   };
-  React.useEffect(() => {
-    let data = axios.get("http://localhost:3000/api/products/", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-      },
-    });
-    console.log(data);
-    data.then((res) => setProducts(res.data));
-    data.catch((err) => console.error(err));
+
+  useEffect(() => {
+    if (!localStorage.getItem("adminToken")) {
+      navigate("/admin");
+      return;
+    }
+    fetchProducts();
   }, []);
 
-  if (!localStorage.getItem("adminToken")) {
-    navigate("/admin");
-  }
+  const addProduct = () => navigate("/admin/add-product");
+  const handleEdit = (id) => navigate(`/admin/edit-product/${id}`);
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this product?")) return;
+    try {
+      await axios.delete(`http://localhost:3000/api/products/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+      });
+      alert("Product deleted successfully");
+      fetchProducts();
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("Failed to delete product");
+    }
+  };
 
   return (
-    <>
-      <h1>Products</h1>
+    <section
+      className="min-vh-100 py-5"
+      style={{
+        background: "linear-gradient(135deg, #e9f0ff 0%, #f7f9fc 100%)",
+      }}
+    >
+      <div className="container">
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <h2 className="fw-bold text-primary">📦 Product Management</h2>
+          <button className="btn btn-success shadow-sm" onClick={addProduct}>
+            ➕ Add Product
+          </button>
+        </div>
 
-      <button className="btn btn-sm btn-success" onClick={addProduct}>
-        Add
-      </button>
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Image</th>
-            <th scope="col">Action</th>
-          </tr>
-        </thead>
-        {products.map((product, index) => (
-          <tbody key={product._id}>
-            <tr>
-              <th scope="row">{index + 1}</th>
-              <td>{product.title}</td>
-              <td>
-                <img src={product.mainImage} alt={product.name} width="50" />
-              </td>
-              <td>
-                <button className="btn btn-sm btn-primary me-2">Edit</button>
-                <button className="btn btn-sm btn-danger">Delete</button>
-              </td>
-            </tr>
-          </tbody>
-        ))}
-      </table>
-    </>
+        {/* Product Cards Grid */}
+        <div className="row g-4">
+          {products.length > 0 ? (
+            products.map((product) => (
+              <div className="col-md-4 col-lg-3" key={product._id}>
+                <div
+                  className="card border-0 shadow-sm h-100 position-relative"
+                  style={{
+                    transition: "transform 0.3s, box-shadow 0.3s",
+                  }}
+                >
+                  <img
+                    src={product.mainImage}
+                    alt={product.title}
+                    className="card-img-top"
+                    style={{
+                      height: "200px",
+                      objectFit: "contain",
+                      borderTopLeftRadius: "8px",
+                      borderTopRightRadius: "8px",
+                    }}
+                  />
+                  <div className="card-body">
+                    <h5 className="card-title text-primary">{product.title}</h5>
+                  </div>
+                  <div className="card-footer bg-white border-0 d-flex justify-content-between">
+                    <button
+                      className="btn btn-outline-primary btn-sm"
+                      onClick={() => handleEdit(product._id)}
+                    >
+                      ✏️ Edit
+                    </button>
+                    <button
+                      className="btn btn-outline-danger btn-sm"
+                      onClick={() => handleDelete(product._id)}
+                    >
+                      🗑️ Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center text-muted mt-5">
+              <h5>No products found.</h5>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
   );
 };
 
