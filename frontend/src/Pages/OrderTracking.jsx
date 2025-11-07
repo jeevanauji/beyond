@@ -10,7 +10,6 @@ const OrderTracking = () => {
 
   const token = localStorage.getItem("token");
 
-
   const decodeToken = (token) => {
     try {
       const base64Url = token.split(".")[1];
@@ -83,17 +82,9 @@ const OrderTracking = () => {
   return (
     <section
       className="min-vh-100 py-7"
-      style={{
-        backgroundImage:
-          "url('https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&fit=crop&w=1920&q=80')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundColor: "#333",
-        backgroundBlendMode: "overlay",
-      }}
     >
       <div className="container">
-        <h2 className="text-center text-white fw-bold mb-5">
+        <h2 className="text-center text-black fw-bold mb-5">
           My Orders Timeline
         </h2>
 

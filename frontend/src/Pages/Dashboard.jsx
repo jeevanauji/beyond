@@ -50,7 +50,7 @@ const Dashboard = () => {
 
   return (
     <section
-      className="min-vh-100 py-5"
+      className="min-vh-100 py-7"
       style={{
         background: "linear-gradient(135deg, #e9f0ff 0%, #f7f9fc 100%)",
       }}

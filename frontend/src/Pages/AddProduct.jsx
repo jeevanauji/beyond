@@ -54,7 +54,7 @@ const AddProduct = () => {
   };
 
   return (
-    <form onSubmit={addProduct} className="p-5">
+    <form onSubmit={addProduct} className="p-7">
       <div className="form-group mb-3">
         <label>Product Name</label>
         <input type="text" name="pname" className="form-control" required />

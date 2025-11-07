@@ -114,7 +114,7 @@ const Products = () => {
 
                   <div className="card-body text-center">
                     <h4 className="card-title">{product.title}</h4>
-                    <p className="text-muted">Price: ${product.priceStart}</p>
+                    <p className="text-muted">Price: Rs.{product.priceStart}</p>
                     <button
                       className="btn btn-outline-primary btn-sm"
                       onClick={() => navigate("/order", { state: { product } })}
