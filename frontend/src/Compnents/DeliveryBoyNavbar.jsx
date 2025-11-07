@@ -22,7 +22,7 @@ const DeliveryBoyNavbar = () => {
           onClick={() =>
             localStorage.getItem("deliveryBoyToken")
               ? navigate("/delivery-boy")
-              : navigate("/delivery-boy")
+              : navigate("/delivery-boy/login")
           }
         >
           🚚 Delivery Portal
@@ -47,7 +47,7 @@ const DeliveryBoyNavbar = () => {
                 navigate(
                   localStorage.getItem("deliveryBoyToken")
                     ? "/delivery-boy/dashboard"
-                    : "/delivery-boy"
+                    : "delivery-boy/login"
                 )
               }
             >
@@ -60,7 +60,7 @@ const DeliveryBoyNavbar = () => {
                 navigate(
                   localStorage.getItem("deliveryBoyToken")
                     ? "/delivery-boy/orders"
-                    : "/delivery-boy/dashboard"
+                    : "delivery-boy/login"
                 )
               }
             >

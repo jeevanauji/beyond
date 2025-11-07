@@ -17,7 +17,7 @@ const Products = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [localStorage.getItem("token")]);
 
   const scrollToNextSection = (e) => {
     e.preventDefault();
